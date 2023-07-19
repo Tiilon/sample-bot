@@ -1,0 +1,117 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hi",
+        "is anyone there?",
+        "Hello",
+        "Good day",
+        "Hey there"
+      ],
+      "responses": [
+        "Hello! How can I assist you today?", 
+        "Hi , how can I help?"
+      ],
+      "set": ""
+    },
+    {
+      "tag": "botstatus",
+      "patterns": [
+        "How are you doing?",
+        "Whats up",
+        "are you fine"
+      ],
+      "responses": [
+        "I am fine.Thanks for asking.",
+        "I am doing good."
+      ],
+      "set": ""
+    },
+    {
+      "tag": "creator",
+      "patterns": [
+        "who are you ?",
+        "who is this ?",
+        "who am i talking to?",
+        "what is your name?",
+        "are you human?"
+      ],
+      "responses": [
+        "Hi my name is  Bot. Sparrow has created me.<br>Nice to meet you."
+      ],
+      "set": ""
+    },
+    {
+      "tag": "sad",
+      "patterns": [
+        "i am sad ",
+        "i am upset",
+        "i have a problem",
+        "i am not okay"
+      ],
+      "responses": [
+        "No problem. Everything will be okay",
+        "'There is only one happiness in life, to love and be loved' \n- George Sand.",
+        "'Cry. Forgive. Learn. Move on. \nLet your tears water the seeds of your future happiness' \n- Steve Maraboli",
+        "I am here for you, how can I help?"
+      ],
+      "set": ""
+    },
+    {
+      "tag": "funny",
+      "patterns": [
+        "you have good sense of humour",
+        "you are funny bot",
+        "funny"
+      ],
+      "responses": [
+        "Yes i have good sense of humour.",
+        "Thanks for your compliment",
+        "Hahahaha"
+      ],
+      "set": ""
+    },
+    {
+      "tag": "positive",
+      "patterns": [
+        "ok",
+        "good cool",
+        "yes wow you are so intelligent ",
+        "hurray i am happy",
+        "i am doing good"
+      ],
+      "responses": [
+        "I Hope you are getting your answers cleared.",
+        "I Guess you are Happy with my responses."
+      ],
+      "set": ""
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye",
+        "See you later",
+        "Goodbye"
+      ],
+      "responses": [
+        "See you later, thanks for visiting us ",
+        "Have a nice day",
+        "Bye! Come back again soon."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thank you",
+        "That's helpful"
+      ],
+      "responses": [
+        "Happy to help!",
+        "Any time!",
+        "My pleasure",
+        "Your Welcome!"
+      ]
+    }
+  ]
+} 

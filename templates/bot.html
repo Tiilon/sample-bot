@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Bot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .scrollable-card {
+            height: 500px;
+            max-width: 500px;
+            overflow-y: auto;
+        }
+
+        .input-container {
+            max-height: 200px;
+            max-width: 500px;
+            overflow-y: auto;
+        }
+
+        .msg-element {
+            max-width: 250px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2>Chat Bot</h2>
+                <div class="card scrollable-card bg-light" id="scrollable-card">
+                    <div class="card-body" id="chat-container">
+                        <!-- Chat messages will be dynamically added here -->
+                    </div>
+                </div>
+
+                <div class="input-group mt-3 input-container">
+                    <input type="text" class="form-control" id="user-input" placeholder="Type your message">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary btn-send" id="send-button">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        var chatContainer = $('#chat-container');
+        var scrollableCard = $("#scrollable-card");
+        let loader_icon = `<div class="flex-row" id="thinking">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><circle cx="16" cy="10" r="0" fill="currentColor"><animate attributeName="r" begin=".67" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;1.75;0;0"/></circle><circle cx="12" cy="10" r="0" fill="currentColor"><animate attributeName="r" begin=".33" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;1.75;0;0"/></circle><circle cx="8" cy="10" r="0" fill="currentColor"><animate attributeName="r" begin="0" calcMode="spline" dur="1.5s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;1.75;0;0"/></circle></svg>
+        </div>`;
+
+        function formatAMPM(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+            return strTime;
+        }
+        function auto_send(userInput){
+            sendMessage(userInput);
+        }
+        function sendMessage(message) {
+            var chatContainer = $('#chat-container');
+            var thinking = $('#thinking');
+            var userMessageHtml = messageHTML('user', message);
+            chatContainer.append(userMessageHtml);
+            scrollableCard.scrollTop(scrollableCard.get(0).scrollHeight);
+            var params = {
+                'data': message
+            };
+
+            // Bot's reply
+            $.ajax({
+                url: 'http://localhost/processor.php',
+                type: 'POST',
+                data: params,
+                beforeSend: function (){
+                    chatContainer.append(loader_icon);
+                    scrollableCard.scrollTop(scrollableCard.get(0).scrollHeight);
+                },
+                success: function (response) {
+                    var botMessage = response.message;
+                    var botMessageHtml = messageHTML('bot', botMessage);
+                    $('#thinking').remove();
+                    chatContainer.append(botMessageHtml);
+                    scrollableCard.scrollTop(scrollableCard.get(0).scrollHeight);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                },
+                complete: function (){
+                }
+            });
+        }
+        function messageHTML(type, message) {
+            var today = new Date();
+            // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var time = formatAMPM(today);
+            var flex_class = '';
+            var user = '';
+                if (type === 'user') {
+                    flex_class = 'flex-row-reverse';
+                    user = 'Guest';
+                }else{
+                    flex_class = 'flex-row';
+                    user = 'Service Assistant';
+                }
+                var msgHTML = `
+                            <div class="d-flex ${flex_class}" style="margin-bottom: 0px;">
+                                <div class="msg-element">
+                                    <fieldset class="fs-5 border border-danger border-sm border-opacity-25 rounded p-1" style="margin-bottom: 0px;">
+                                        <small class='alert-success'>${user}</small><br>
+                                        ${message}
+                                        <small class="d-flex flex-row-reverse">${time}</small>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            `;
+                return msgHTML;
+            } 
+        $(document).ready(function () {
+            
+            var initial_msg = `
+            <div class="d-flex flex-row" style="margin-bottom: 0px;">
+                <div class="msg-element">
+                    <fieldset class="fs-5 border border-danger border-sm border-opacity-25 rounded p-1" style="margin-bottom: 0px;">
+                        <small class='alert-success'>Service Assistant</small><br>
+                        Welcome to Academic City University College. How can I assist you today?
+                    </fieldset>
+                </div>
+            </div>
+            `;
+            chatContainer.append(initial_msg);
+            scrollableCard.scrollTop(scrollableCard.get(0).scrollHeight);
+
+            $('#send-button').click(function () {
+                var userMessage = $('#user-input').val();
+                sendMessage(userMessage);
+                $('#user-input').val('');
+            });
+
+            $('#user-input').keypress(function (e) {
+                if (e.which === 13) {
+                    var userMessage = $('#user-input').val();
+                    sendMessage(userMessage);
+                    $('#user-input').val('');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
